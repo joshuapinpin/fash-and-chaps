@@ -47,7 +47,7 @@ class Monster implements Entity{
 			var arrow= m.camera().location().distance(location);
 	    double size= arrow.size();
 	    arrow = arrow.times(speed() / size);
-	    location = location.add(arrow); 
+	    location = location.add(arrow);  
 	    if (size < 0.6d){ m.onGameOver(); }
 	    
 		}
