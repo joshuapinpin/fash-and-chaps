@@ -13,4 +13,4 @@ class Controller extends Keys{
     setAction(KeyEvent.VK_O, s.set(Direction::left), s.set(Direction::unLeft));
     setAction(KeyEvent.VK_P, s.set(Direction::right), s.set(Direction::unRight));
   }
-}
+} 

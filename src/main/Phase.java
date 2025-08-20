@@ -30,12 +30,18 @@ record Phase(Model model, Controller controller){
   static Phase level2(Runnable next, Runnable first) {
   	return levelTemplate(next, first, List.of(
 			new Monster(new Point(0, 0)),
-	  	new Monster(new Point(15, 15)),
-			new RoamingMonster(new Point(0, 15)),
-			new Monster(new Point(15, 0))
+	  	new Monster(new Point(16, 16)),
+			new RoamingMonster(new Point(0, 16)),
+			new Monster(new Point(16, 0))
   	));
   }
   static Phase level3(Runnable next, Runnable first) {
-  	return levelTemplate(next, first, List.of(new Monster(new Point(0,0))));
+  	Monster m = new Monster(new Point(0,0));
+  	Sword s = new Sword(m) {
+  	  @Override public double distance(){ return 1.5d; }
+  	  @Override public double speed(){ return 0.4d; }
+  	};
+  	s.set(Direction::left).run();
+  	return levelTemplate(next, first, List.of(s,m));
   }
 }

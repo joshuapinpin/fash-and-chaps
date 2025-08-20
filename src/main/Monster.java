@@ -44,31 +44,25 @@ public class Monster implements Entity{
   }
   
   protected static class AwakeState implements MonsterState{
-		@Override
 		public void ping(Model m, Monster monster) {
 			var arrow= m.camera().location().distance(monster.location());
 	    double size= arrow.size();
 	    arrow = arrow.times(monster.speed() / size);
 	    monster.location(monster.location().add(arrow));
-//	    location = location.add(arrow);  
 	    if (size < 0.6d){ m.onGameOver(); }
 	    else if(size > 6.0d) monster.monsterState(new SleepState());
 	    
 		}
-		@Override
 		public void draw(Graphics g, Point center, Dimension size, Monster monster) {
 			monster.drawImg(Img.AwakeMonster.image, g, center, size);
 		}
   }
   
   protected static class SleepState implements MonsterState{
-		@Override
 		public void ping(Model m, Monster monster) {
 			var arrow = m.camera().location().distance(monster.location());
 			if(arrow.size() < 6.0d) monster.monsterState(new AwakeState());
 		}
-
-		@Override
 		public void draw(Graphics g, Point center, Dimension size, Monster monster) {
 			monster.drawImg(Img.SleepMonster.image, g, center, size);
 		}
@@ -79,8 +73,6 @@ public class Monster implements Entity{
 			monster.deadTicks++;
 			if(monster.deadTicks >= 100) m.remove(monster);
 		}
-
-		@Override
 		public void draw(Graphics g, Point center, Dimension size, Monster monster) {
 			monster.drawImg(Img.DeadMonster.image, g, center, size);
 		}
@@ -89,25 +81,23 @@ public class Monster implements Entity{
   protected static class RoamingState implements MonsterState{
   	public int roamingPings = 0;
   	Point randomPoint;
-		@Override
 		public void ping(Model m, Monster monster) {
-			if(roamingPings % 50 == 0) {
-				randomPoint = new Point((Math.random()*30)-15, (Math.random()*30)-15);
-				System.out.println(randomPoint);
-			}
-			var arrow = monster.location().distance(randomPoint);
+			if(roamingPings % 50 == 0) randomPoint = randomPoint(monster);
+			var arrow = randomPoint.distance(monster.location());
 			double size = arrow.size();
 			arrow = arrow.times(monster.speed() / Math.max(size, 0.001));
 			monster.location(monster.location().add(arrow));
+			
+			double playerDistance = m.camera().location().distance(monster.location()).size();
+			if (playerDistance < 0.6d){ m.onGameOver(); }
 			roamingPings++;
 		}
-
-		@Override
 		public void draw(Graphics g, Point center, Dimension size, Monster monster) {
 			monster.drawImg(Img.AwakeMonster.image, g, center, size);
 		}
-
-		
+		private Point randomPoint(Monster monster) {
+			return new Point(Math.random() * 32 - 16, Math.random() * 32 - 16);
+		}
   }
 }
 

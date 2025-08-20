@@ -9,4 +9,4 @@ abstract class ControllableDirection{
   public Runnable set(Function<Direction,Direction> f){
     return ()->direction = f.apply(direction);
   }
-}
+} 

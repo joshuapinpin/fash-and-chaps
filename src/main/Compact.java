@@ -53,7 +53,7 @@ class Compact extends JFrame{
   }
   
   private void victoryPhase() {
-  	throw new Error("Victory Phase not yet completed");
+  	throw new Error("Victory Phase not yet completed ");
   }
   
   
