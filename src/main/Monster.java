@@ -5,22 +5,24 @@ import java.awt.Graphics;
 import imgs.Img;
 
 
-class Monster implements Entity{
+public class Monster implements Entity{
   private Point location;
-  private MonsterState monsterState = new SleepState();
-  private int deadTicks = 0;
+  protected MonsterState monsterState = new SleepState();
+  protected int deadTicks = 0;
   
-  Monster(Point location){ this.location= location; }
-  
+  public Monster(Point location){ this.location= location; }
+  public Monster(Point location, MonsterState monsterState){
+  	this.location = location; this.monsterState = monsterState;
+  }
   public Point location(){ return location; }
   public void location(Point p){ location = p; }
+  public MonsterState monsterState() {return monsterState;}
+  public void monsterState(MonsterState state) {monsterState = state;}
   public double speed(){ return 0.05d; }
-  
-  public void ping(Model m){monsterState.ping(m);}
+  public void ping(Model m){monsterState.ping(m, this);}
   public void draw(Graphics g, Point center, Dimension size) {
-  	monsterState.draw(g, center, size);
+  	monsterState.draw(g, center, size, this);
   }
- 
   public double chaseTarget(Monster outer, Point target){
     var arrow= target.distance(outer.location());
     double size= arrow.size();
@@ -36,65 +38,79 @@ class Monster implements Entity{
   	}
   }
   
-  private interface MonsterState{
-  	void ping(Model m);
-  	void draw(Graphics g, Point center, Dimension size);
+  protected static interface MonsterState{
+  	void ping(Model m, Monster monster);
+  	void draw(Graphics g, Point center, Dimension size, Monster monster);
   }
   
-  private class AwakeState implements MonsterState{
+  protected static class AwakeState implements MonsterState{
 		@Override
-		public void ping(Model m) {
-			var arrow= m.camera().location().distance(location);
+		public void ping(Model m, Monster monster) {
+			var arrow= m.camera().location().distance(monster.location());
 	    double size= arrow.size();
-	    arrow = arrow.times(speed() / size);
-	    location = location.add(arrow);  
+	    arrow = arrow.times(monster.speed() / size);
+	    monster.location(monster.location().add(arrow));
+//	    location = location.add(arrow);  
 	    if (size < 0.6d){ m.onGameOver(); }
+	    else if(size > 6.0d) monster.monsterState(new SleepState());
 	    
 		}
 		@Override
-		public void draw(Graphics g, Point center, Dimension size) {
-			drawImg(Img.AwakeMonster.image, g, center, size);
+		public void draw(Graphics g, Point center, Dimension size, Monster monster) {
+			monster.drawImg(Img.AwakeMonster.image, g, center, size);
 		}
   }
   
-  private class SleepState implements MonsterState{
+  protected static class SleepState implements MonsterState{
 		@Override
-		public void ping(Model m) {
-			var arrow = m.camera().location().distance(location);
+		public void ping(Model m, Monster monster) {
+			var arrow = m.camera().location().distance(monster.location());
+			if(arrow.size() < 6.0d) monster.monsterState(new AwakeState());
+		}
+
+		@Override
+		public void draw(Graphics g, Point center, Dimension size, Monster monster) {
+			monster.drawImg(Img.SleepMonster.image, g, center, size);
+		}
+  }
+  
+  protected static class DeadState implements MonsterState{
+		public void ping(Model m, Monster monster) {
+			monster.deadTicks++;
+			if(monster.deadTicks >= 100) m.remove(monster);
+		}
+
+		@Override
+		public void draw(Graphics g, Point center, Dimension size, Monster monster) {
+			monster.drawImg(Img.DeadMonster.image, g, center, size);
+		}
+  }
+  
+  protected static class RoamingState implements MonsterState{
+  	public int roamingPings = 0;
+  	Point randomPoint;
+		@Override
+		public void ping(Model m, Monster monster) {
+			if(roamingPings % 50 == 0) {
+				randomPoint = new Point((Math.random()*30)-15, (Math.random()*30)-15);
+				System.out.println(randomPoint);
+			}
+			var arrow = monster.location().distance(randomPoint);
 			double size = arrow.size();
-			if(size < 6.0d) monsterState = new AwakeState();
+			arrow = arrow.times(monster.speed() / Math.max(size, 0.001));
+			monster.location(monster.location().add(arrow));
+			roamingPings++;
 		}
 
 		@Override
-		public void draw(Graphics g, Point center, Dimension size) {
-			drawImg(Img.SleepMonster.image, g, center, size);
+		public void draw(Graphics g, Point center, Dimension size, Monster monster) {
+			monster.drawImg(Img.AwakeMonster.image, g, center, size);
 		}
+
+		
   }
-  
-  private class DeadState implements MonsterState{
-		public void ping(Model m) {
-			deadTicks++;
-			if(deadTicks >= 100) m.remove(Monster.this);
-		}
+}
 
-		@Override
-		public void draw(Graphics g, Point center, Dimension size) {
-			drawImg(Img.DeadMonster.image, g, center, size);
-		}
-  }
-  
-  private class RoamingState implements MonsterState{
-
-		@Override
-		public void ping(Model m) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void draw(Graphics g, Point center, Dimension size) {
-			// TODO Auto-generated method stub
-			
-		}
-  }
+class RoamingMonster extends Monster{
+	RoamingMonster(Point location){super(location, new RoamingState());}
 }

@@ -12,7 +12,7 @@ record Phase(Model model, Controller controller){
 	    List<Entity> entities= Stream.concat(monsters.stream(), Stream.of(c,s)).toList();
 	    public Camera camera(){ return c; }
 	    public List<Entity> entities(){ return entities; }
-	    public void remove(Entity e){ 
+	    public void remove(Entity e){  
 	      entities= entities.stream()
 	        .filter(ei->!ei.equals(e))
 	        .toList();
@@ -31,7 +31,7 @@ record Phase(Model model, Controller controller){
   	return levelTemplate(next, first, List.of(
 			new Monster(new Point(0, 0)),
 	  	new Monster(new Point(15, 15)),
-			new Monster(new Point(0, 15)),
+			new RoamingMonster(new Point(0, 15)),
 			new Monster(new Point(15, 0))
   	));
   }
