@@ -72,8 +72,6 @@ class Monster implements Entity{
   }
   
   private class DeadState implements MonsterState{
-
-		@Override
 		public void ping(Model m) {
 			deadTicks++;
 			if(deadTicks >= 100) m.remove(Monster.this);
@@ -83,6 +81,20 @@ class Monster implements Entity{
 		public void draw(Graphics g, Point center, Dimension size) {
 			drawImg(Img.DeadMonster.image, g, center, size);
 		}
-  	
+  }
+  
+  private class RoamingState implements MonsterState{
+
+		@Override
+		public void ping(Model m) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void draw(Graphics g, Point center, Dimension size) {
+			// TODO Auto-generated method stub
+			
+		}
   }
 }

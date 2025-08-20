@@ -1,5 +1,7 @@
 package main;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
@@ -38,9 +40,25 @@ class Compact extends JFrame{
     setPreferredSize(new Dimension(800, 400));
     pack();
   }
+  
   private void phaseOne(){
-    setPhase(Phase.level1(()->phaseOne(), ()->phaseZero()));
+  	setPhase(Phase.level1(()->phaseTwo(), ()->phaseZero()));
   }
+  private void phaseTwo() {
+  	setPhase(Phase.level2(() -> phaseThree(), () -> phaseZero()));
+  }
+  
+  private void phaseThree() {
+  	setPhase(Phase.level3(() -> victoryPhase(), () -> phaseZero()));
+  }
+  
+  private void victoryPhase() {
+  	throw new Error("Victory Phase not yet completed");
+  }
+  
+  
+  
+  
   void setPhase(Phase p){
     //set up the viewport and the timer
     Viewport v= new Viewport(p.model());
