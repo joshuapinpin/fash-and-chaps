@@ -8,6 +8,7 @@ import imgs.Img;
 class Monster implements Entity{
   private Point location;
   private MonsterState monsterState = new SleepState();
+  private int deadTicks = 0;
   
   Monster(Point location){ this.location= location; }
   
@@ -28,6 +29,13 @@ class Monster implements Entity{
     return size;
   }
   
+  public void hitBySword() {
+  	if (!(monsterState instanceof DeadState)) {
+      monsterState = new DeadState();
+      deadTicks = 0;
+  	}
+  }
+  
   private interface MonsterState{
   	void ping(Model m);
   	void draw(Graphics g, Point center, Dimension size);
@@ -41,6 +49,7 @@ class Monster implements Entity{
 	    arrow = arrow.times(speed() / size);
 	    location = location.add(arrow); 
 	    if (size < 0.6d){ m.onGameOver(); }
+	    
 		}
 		@Override
 		public void draw(Graphics g, Point center, Dimension size) {
@@ -61,18 +70,18 @@ class Monster implements Entity{
 			drawImg(Img.SleepMonster.image, g, center, size);
 		}
   }
+  
   private class DeadState implements MonsterState{
 
 		@Override
 		public void ping(Model m) {
-			// TODO Auto-generated method stub
-			
+			deadTicks++;
+			if(deadTicks >= 100) m.remove(Monster.this);
 		}
 
 		@Override
 		public void draw(Graphics g, Point center, Dimension size) {
-			// TODO Auto-generated method stub
-			
+			drawImg(Img.DeadMonster.image, g, center, size);
 		}
   	
   }
