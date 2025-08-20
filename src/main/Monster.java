@@ -7,7 +7,7 @@ import imgs.Img;
 
 class Monster implements Entity{
   private Point location;
-  private MonsterState monsterState = new AwakeState();
+  private MonsterState monsterState = new SleepState();
   
   Monster(Point location){ this.location= location; }
   
@@ -34,7 +34,6 @@ class Monster implements Entity{
   }
   
   private class AwakeState implements MonsterState{
-
 		@Override
 		public void ping(Model m) {
 			var arrow= m.camera().location().distance(location);
@@ -43,24 +42,23 @@ class Monster implements Entity{
 	    location = location.add(arrow); 
 	    if (size < 0.6d){ m.onGameOver(); }
 		}
-
 		@Override
 		public void draw(Graphics g, Point center, Dimension size) {
 			drawImg(Img.AwakeMonster.image, g, center, size);
 		}
   }
+  
   private class SleepState implements MonsterState{
-
 		@Override
 		public void ping(Model m) {
-			// TODO Auto-generated method stub
-			
+			var arrow = m.camera().location().distance(location);
+			double size = arrow.size();
+			if(size < 6.0d) monsterState = new AwakeState();
 		}
 
 		@Override
 		public void draw(Graphics g, Point center, Dimension size) {
-			// TODO Auto-generated method stub
-			
+			drawImg(Img.SleepMonster.image, g, center, size);
 		}
   }
   private class DeadState implements MonsterState{
