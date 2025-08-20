@@ -23,4 +23,4 @@ class Keys implements KeyListener {
     assert SwingUtilities.isEventDispatchThread();
     actionsReleased.getOrDefault(e.getKeyCode(), ()->{}).run();
   }
-}  
+}

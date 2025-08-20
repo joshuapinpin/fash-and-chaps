@@ -2,9 +2,10 @@ package main;
 
 import java.util.List;
 import java.util.stream.Stream;
-
+import java.util.Map;
 record Phase(Model model, Controller controller){ 
-	static Phase levelTemplate(Runnable next, Runnable first, List<Entity> monsters, java.util.Map<String, Integer> keyBindings) {
+	static Phase levelTemplate(Runnable next, Runnable first, 
+			List<Entity> monsters, Map<String, Integer> keyBindings) {
 		Camera c= new Camera(new Point(5, 5));
 		Sword s= new Sword(c);
 		Cells cells= new Cells();
@@ -30,10 +31,10 @@ record Phase(Model model, Controller controller){
 		return new Phase(m, new Controller(c, s, keyBindings));    
 	}
 	
-	static Phase level1(Runnable next, Runnable first, java.util.Map<String, Integer> keyBindings) {
+	static Phase level1(Runnable next, Runnable first, Map<String, Integer> keyBindings) {
 		return levelTemplate(next, first, List.of(new Monster(new Point(0, 0))), keyBindings);
 	}
-	static Phase level2(Runnable next, Runnable first, java.util.Map<String, Integer> keyBindings) {
+	static Phase level2(Runnable next, Runnable first, Map<String, Integer> keyBindings) {
 		return levelTemplate(next, first, List.of(
 			new Monster(new Point(0, 0)),
 			new Monster(new Point(16, 16)),
@@ -41,7 +42,7 @@ record Phase(Model model, Controller controller){
 			new Monster(new Point(16, 0))
 		), keyBindings);
 	}
-	static Phase level3(Runnable next, Runnable first, java.util.Map<String, Integer> keyBindings) {
+	static Phase level3(Runnable next, Runnable first, Map<String, Integer> keyBindings) {
 		Monster m = new Monster(new Point(0,0));
 		Sword s = new Sword(m) {
 			@Override public double distance(){ return 1.5d; }

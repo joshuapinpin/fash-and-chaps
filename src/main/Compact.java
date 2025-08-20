@@ -19,8 +19,6 @@ import javax.swing.Timer;
 class Compact extends JFrame{
   private static final long serialVersionUID= 1L;
   Runnable closePhase= ()->{};
-  // ...existing code...
-  // Store selected key codes
   Map<String, Integer> keyBindings = defaultKeyBindings();
 
   // Default key bindings

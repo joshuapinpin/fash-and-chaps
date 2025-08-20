@@ -1,11 +1,12 @@
 package main;
 
 import java.awt.event.KeyEvent;
+import java.util.Map;
 
 
 
 class Controller extends Keys{
-  Controller(Camera c, Sword s, java.util.Map<String, Integer> keyBindings){
+  Controller(Camera c, Sword s, Map<String, Integer> keyBindings){
     setAction(keyBindings.getOrDefault("up", KeyEvent.VK_W), c.set(Direction::up), c.set(Direction::unUp));
     setAction(keyBindings.getOrDefault("down", KeyEvent.VK_S), c.set(Direction::down), c.set(Direction::unDown));
     setAction(keyBindings.getOrDefault("left", KeyEvent.VK_A), c.set(Direction::left), c.set(Direction::unLeft));
